@@ -1,2 +1,6 @@
-from .primitives import Point, Face, Shape
-from .operations import render, add, subtract, intersect
+from .primitives.point import Point
+from .primitives.face import Face
+from .primitives.shape import Shape
+
+from .operations.render import render
+from .operations.composite import add, subtract, intersect

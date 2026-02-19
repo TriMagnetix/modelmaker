@@ -24,7 +24,7 @@ pip install .[test]
 Tests are defined in the `tests` directory, and they can be run using pytest.
 
 ```bash
-python -m pytest
+pytest
 ```
 
 ## Overview

@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
 	name='modelmaker',
@@ -8,16 +8,17 @@ setup(
 	author='Madison Hanberry',
 	author_email='madison@trimagnetix.com',
 	license='GPL-3.0-or-later',
-	packages=['modelmaker'],
+	packages=find_packages(),
 	test_suite='tests',
 	install_requires=[
-		'PyOpenGL',
+		'raylib',
+		'scipy',
 	],
 	extras_require={
 		'test': [
 			'pytest',
-			'flake8',
-			'black',
+			'flake8-tabs',
+			'black-with-tabs',
 		],
 	},
 	classifiers=[

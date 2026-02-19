@@ -1,8 +1,10 @@
 def add():
-	raise NotImplementedError('modelmaker.operations.composite.add')
+	raise NotImplementedError("modelmaker.operations.composite.add")
+
 
 def subtract():
-	raise NotImplementedError('modelmaker.operations.composite.subtract')
+	raise NotImplementedError("modelmaker.operations.composite.subtract")
+
 
 def intersect():
-	raise NotImplementedError('modelmaker.operations.composite.intersect')
+	raise NotImplementedError("modelmaker.operations.composite.intersect")
