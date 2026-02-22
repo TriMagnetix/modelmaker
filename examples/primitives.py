@@ -7,7 +7,7 @@ origin = mm.Point(0, 0, 0)
 triangle = mm.Face([
 	(0, 0, 0),
 	(1, 0, 0),
-	(0, 1, 0),
+	(0, 0, 1),
 ])
 
 # create a 3d shape from a group of tuples, or a group of faces
@@ -34,9 +34,49 @@ tetrahedron = mm.Shape([
 	],
 ])
 
+cube = mm.Shape([
+	[
+		(0, 0, 0),
+		(0, 1, 0),
+		(1, 0, 0),
+		(1, 1, 0),
+	],
+	[
+		(0, 0, 0),
+		(0, 0, 1),
+		(1, 0, 0),
+		(1, 0, 1),
+	],
+	[
+		(0, 0, 0),
+		(0, 0, 1),
+		(0, 1, 0),
+		(0, 1, 1),
+	],
+	[
+		(0, 0, 1),
+		(0, 1, 1),
+		(1, 0, 1),
+		(1, 1, 1),
+	],
+	[
+		(0, 1, 0),
+		(0, 1, 1),
+		(1, 1, 0),
+		(1, 1, 1),
+	],
+	[
+		(1, 0, 0),
+		(1, 0, 1),
+		(1, 1, 0),
+		(1, 1, 1),
+	],
+])
+
 # render a group of primitives to the screen, and navigate the scene via mouse
 mm.render([
 	origin,
 	triangle,
-	tetrahedron
+	tetrahedron,
+	cube,
 ])
