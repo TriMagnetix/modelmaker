@@ -1,5 +1,7 @@
 import pyray as pr
 
+from . import cameraops as co
+
 
 def setup():
 	"""
@@ -9,15 +11,11 @@ def setup():
 	"""
 
 	pr.init_window(500, 500, "Model Maker")
-	pr.set_target_fps(60)
+	pr.set_window_state(pr.FLAG_WINDOW_RESIZABLE)
+	pr.set_target_fps(24)
 	pr.rl_disable_backface_culling()
 
-	camera = pr.Camera()
-	camera.position = (-7, 7, 7)
-	camera.target = (0, 0, 0)
-	camera.up = (0, 1, 0)
-	camera.fovy = 45
-	camera.projection = pr.CAMERA_PERSPECTIVE
+	camera = co.setup()
 
 	return camera
 
@@ -68,7 +66,7 @@ def draw_point(point):
 	Renders individual points to the window
 	"""
 
-	pr.draw_sphere(tuple(point), 0.05, pr.BLACK)
+	pr.draw_sphere(tuple(point), 0.02, pr.BLACK)
 
 
 def draw_primitives(primitives):
@@ -92,6 +90,7 @@ def render(primitives):
 	calculate_triangles(primitives)
 
 	while not pr.window_should_close():
+		co.update(camera)
 		pr.begin_drawing()
 		pr.clear_background(pr.WHITE)
 		pr.begin_mode_3d(camera)
