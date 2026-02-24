@@ -21,6 +21,10 @@ def setup():
 
 
 def is_in_dead_zone():
+	"""
+	Checks if the mouse is in the dead zone
+	"""
+
 	dead_zone = 0.01
 	move = pr.vector2_subtract(get_rel_mouse(), ref_point)
 
@@ -28,6 +32,10 @@ def is_in_dead_zone():
 
 
 def rotate(camera):
+	"""
+	Rotates the camera based on the mouse position
+	"""
+
 	if is_in_dead_zone():
 		return
 
@@ -60,6 +68,10 @@ def rotate(camera):
 
 
 def pan(camera):
+	"""
+	Pans the camera based on the mouse position
+	"""
+
 	if is_in_dead_zone():
 		return
 
@@ -86,6 +98,10 @@ def pan(camera):
 
 
 def zoom(camera):
+	"""
+	Brings the camera closer to or further from the target
+	"""
+
 	forward = pr.vector3_subtract(camera.position, camera.target)
 	distance = pr.vector3_length(forward)
 	norm = pr.vector3_normalize(forward)
@@ -101,6 +117,10 @@ def zoom(camera):
 
 
 def get_rel_mouse():
+	"""
+	Gets the mouse position in relative screen coordinates
+	"""
+
 	rel_mouse_x = pr.get_mouse_x() / pr.get_screen_width() - 0.5
 	rel_mouse_y = -pr.get_mouse_y() / pr.get_screen_height() + 0.5
 
@@ -108,6 +128,10 @@ def get_rel_mouse():
 
 
 def set_ref_point():
+	"""
+	Sets the reference mouse point to be used with the relative mouse location
+	"""
+
 	if not (
 		pr.is_mouse_button_pressed(pr.MOUSE_BUTTON_LEFT)
 		or pr.is_mouse_button_pressed(pr.MOUSE_BUTTON_MIDDLE)
@@ -125,6 +149,10 @@ def set_ref_point():
 
 
 def update(camera):
+	"""
+	Updates the camera postition
+	"""
+
 	set_ref_point()
 
 	if pr.is_mouse_button_down(pr.MOUSE_BUTTON_LEFT):

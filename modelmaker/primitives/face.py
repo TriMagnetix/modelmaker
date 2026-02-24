@@ -10,6 +10,10 @@ class Face:
 		self.outline = []
 
 	def _parse_points(self, points):
+		"""
+		Creates Point objects from tuples as needed
+		"""
+
 		return [Point(*p) if type(p).__name__ != "Point" else p for p in points]
 
 	def _calculate_triangles(self):
