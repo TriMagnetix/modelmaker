@@ -46,7 +46,26 @@ def rotate(camera):
 
 
 def pan(camera):
-	pass
+	pan_speed_h = 2 * (pr.get_mouse_x() / pr.get_screen_width() - 0.5)
+	pan_speed_v = 2 * (-pr.get_mouse_y() / pr.get_screen_height() + 0.5)
+	forward = pr.vector3_subtract(camera.target, camera.position)
+
+	# relative right vector
+	right = pr.vector3_cross_product(forward, camera.up)
+	right = pr.vector3_normalize(right)
+
+	# relative up vector
+	up = pr.vector3_cross_product(right, forward)
+	up = pr.vector3_normalize(up)
+
+	translation = pr.vector3_add(
+		pr.vector3_scale(right, pan_speed_h),
+		pr.vector3_scale(up, pan_speed_v)
+	)
+
+	camera.position = pr.vector3_add(camera.position, translation)
+	camera.target = pr.vector3_add(camera.target, translation)
+
 
 def zoom(camera):
 	forward = pr.vector3_subtract(camera.position, camera.target)
