@@ -13,7 +13,7 @@ def setup():
 	pr.rl_disable_backface_culling()
 
 	camera = pr.Camera()
-	camera.position = (-4, 4, 4)
+	camera.position = (-7, 7, 7)
 	camera.target = (0, 0, 0)
 	camera.up = (0, 1, 0)
 	camera.fovy = 45
@@ -68,7 +68,7 @@ def draw_point(point):
 	Renders individual points to the window
 	"""
 
-	pr.draw_point_3d(tuple(point), pr.DARKGRAY)
+	pr.draw_sphere(tuple(point), 0.05, pr.BLACK)
 
 
 def draw_primitives(primitives):
