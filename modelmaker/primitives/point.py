@@ -4,6 +4,9 @@ class Point:
 		self.y = y
 		self.z = z
 
+	def __str__(self):
+		return f"({self.x}, {self.y}, {self.z})"
+
 	def __iter__(self):
 		for n in (self.x, self.y, self.z):
 			yield n

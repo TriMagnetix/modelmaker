@@ -9,6 +9,17 @@ class Face:
 		self.points = self._parse_points(points)
 		self.triangles = []
 		self.outline = []
+		self.center = self._calc_centroid()
+
+	def move_to(self, x, y, z):
+		dx, dy, dz = tuple(self.center)
+
+		for p in self.points:
+			p.x += x - dx
+			p.y += y - dy
+			p.z += z - dz
+
+		self.center = self._calc_centroid()
 
 	def translate(self, x, y, z):
 		for p in self.points:
@@ -16,47 +27,64 @@ class Face:
 			p.y += y
 			p.z += z
 
+		self.center = self._calc_centroid()
+
 	def rotate(self, rot_vect, rad):
-		ux, uy, uz = rot_vect
+		ux, uy, uz = self._vect_norm(rot_vect)
 		q = (
-			math.cos(rad/2),
-			ux * math.sin(rad/2),
-			uy * math.sin(rad/2),
-			uz * math.sin(rad/2),
+			math.cos(rad / 2),
+			ux * math.sin(rad / 2),
+			uy * math.sin(rad / 2),
+			uz * math.sin(rad / 2),
 		)
 		q_conj = (
-			math.cos(rad/2),
-			-ux * math.sin(rad/2),
-			-uy * math.sin(rad/2),
-			-uz * math.sin(rad/2),
+			math.cos(rad / 2),
+			-ux * math.sin(rad / 2),
+			-uy * math.sin(rad / 2),
+			-uz * math.sin(rad / 2),
 		)
+
+		x, y, z = self.center
+		self.move_to(0, 0, 0)
 
 		for p in self.points:
 			p_quat = (0, p.x, p.y, p.z)
-			_, x, y, z = self._quatmul(
+			_, p.x, p.y, p.z = self._quatmul(
 				self._quatmul(q, p_quat),
 				q_conj,
 			)
-			p.x = x
-			p.y = y
-			p.z = z
 
+		self.center = self._calc_centroid()
+		self.move_to(x, y, z)
 
 	def scale(self, factor):
+		x, y, z = self.center
+
+		self.move_to(0, 0, 0)
+
 		for p in self.points:
 			p.x = factor * p.x
 			p.y = factor * p.y
 			p.z = factor * p.z
 
+		self.center = self._calc_centroid()
+
+		self.move_to(x, y, z)
+
+	def _vect_norm(self, vect):
+		magnitude = math.sqrt(sum([n**2 for n in vect]))
+
+		return (n / magnitude for n in vect)
+
 	def _quatmul(self, q1, q2):
-		a, b, c, d = q1
-		e, f, g, h = q2
+		w1, x1, y1, z1 = q1
+		w2, x2, y2, z2 = q2
 
 		return (
-			a * e - b * f - c * g - d * h,
-			a * f + b * e + d * g - c * h,
-			a * g - b * f + c * e + d * h,
-			a * h + b * g - c * f + d * e,
+			w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
+			w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+			w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
+			w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
 		)
 
 	def _parse_points(self, points):
@@ -66,7 +94,14 @@ class Face:
 
 		return [Point(*p) if type(p).__name__ != "Point" else p for p in points]
 
-	def _calculate_triangles(self):
+	def _calc_centroid(self):
+		x = sum(p.x / len(self.points) for p in self.points)
+		y = sum(p.y / len(self.points) for p in self.points)
+		z = sum(p.z / len(self.points) for p in self.points)
+
+		return Point(x, y, z)
+
+	def _calc_triangles(self):
 		"""
 		Triangulates the face
 		"""
@@ -75,9 +110,9 @@ class Face:
 			return list(set(points))
 
 		# select a reference plane where there are no overlapping points
-		points_xy = [(p.x, p.y) for p in self.points]
-		points_xz = [(p.x, p.z) for p in self.points]
-		points_yz = [(p.y, p.z) for p in self.points]
+		points_xy = [(round(p.x, 3), round(p.y, 3)) for p in self.points]
+		points_xz = [(round(p.x, 3), round(p.z, 3)) for p in self.points]
+		points_yz = [(round(p.y, 3), round(p.z, 3)) for p in self.points]
 		points_2d = (
 			points_xy
 			if len(points_xy) == len(dedupe(points_xy))
@@ -85,13 +120,6 @@ class Face:
 			if len(points_xz) == len(dedupe(points_xz))
 			else points_yz
 		)
-
-		# raise an error if the face cannot be expressed in 2 dimensions
-		if len(points_2d) != len(dedupe(self.points)):
-			raise Exception(
-				"The face cannot be expressed in 2 dimensions."
-				+ "Please split it into separate faces."
-			)
 
 		# triangulate the face
 		self.triangles = [
@@ -103,7 +131,7 @@ class Face:
 			for s in Delaunay(points_2d).simplices
 		]
 
-	def _calculate_outline(self):
+	def _calc_outline(self):
 		"""
 		Creates the outline using non-shared edges in the triangulation
 		"""

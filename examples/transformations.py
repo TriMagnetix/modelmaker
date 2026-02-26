@@ -5,8 +5,11 @@ import modelmaker as mm
 triangle = mm.Face([
 	(0, 0, 0),
 	(1, 0, 0),
-	(0, 1, 0),
+	(0, 0, 1),
 ])
+
+# move the triangle to the center
+triangle.move_to(0, 0, 0)
 
 # translate the triangle 10 units in the +x direction
 triangle.translate(10, 0, 0)
@@ -18,7 +21,7 @@ triangle.rotate((0, 1, 0), math.pi / 2)
 triangle.scale(2)
 
 # extrude the triangle to create a triangular prism
-prism = mm.extrude(triangle, (0, 0, 1))
+prism = mm.extrude(triangle, (0, 1, 0))
 
 # render the scene
 mm.render([prism])

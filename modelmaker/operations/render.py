@@ -21,7 +21,7 @@ def setup():
 	return camera
 
 
-def calculate_triangles(primitives):
+def calc_triangles(primitives):
 	"""
 	Triangulates all faces
 	"""
@@ -35,8 +35,8 @@ def calculate_triangles(primitives):
 			faces.extend(p.faces)
 
 	for f in faces:
-		f._calculate_triangles()
-		f._calculate_outline()
+		f._calc_triangles()
+		f._calc_outline()
 
 
 def draw_3d_shape(shape):
@@ -88,7 +88,7 @@ def draw_primitives(primitives):
 
 def render(primitives):
 	camera = setup()
-	calculate_triangles(primitives)
+	calc_triangles(primitives)
 
 	while not pr.window_should_close():
 		co.update(camera)
