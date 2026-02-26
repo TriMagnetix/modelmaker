@@ -1,3 +1,4 @@
+import math
 from scipy.spatial import Delaunay
 
 from .point import Point
@@ -10,16 +11,53 @@ class Face:
 		self.outline = []
 
 	def translate(self, x, y, z):
-		pass
+		for p in self.points:
+			p.x += x
+			p.y += y
+			p.z += z
 
-	def rotate(self, radians):
-		pass
+	def rotate(self, rot_vect, rad):
+		ux, uy, uz = rot_vect
+		q = (
+			math.cos(rad/2),
+			ux * math.sin(rad/2),
+			uy * math.sin(rad/2),
+			uz * math.sin(rad/2),
+		)
+		q_conj = (
+			math.cos(rad/2),
+			-ux * math.sin(rad/2),
+			-uy * math.sin(rad/2),
+			-uz * math.sin(rad/2),
+		)
+		print(rad)
+		print(q)
+		print(q_conj)
 
-	def reflect(self, line):
-		pass
+		for p in self.points:
+			p_quat = (0, p.x, p.y, p.z)
+			_, x, y, z = self._quatmul(
+				self._quatmul(q, p_quat),
+				q_conj,
+			)
+			p.x = x
+			p.y = y
+			p.z = z
+
 
 	def scale(self, factor):
 		pass
+
+	def _quatmul(self, q1, q2):
+		a, b, c, d = q1
+		e, f, g, h = q2
+
+		return (
+			a * e - b * f - c * g - d * h,
+			a * f + b * e + d * g - c * h,
+			a * g - b * f + c * e + d * h,
+			a * h + b * g - c * f + d * e,
+		)
 
 	def _parse_points(self, points):
 		"""
