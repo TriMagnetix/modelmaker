@@ -82,7 +82,7 @@ mm.render([
 
 You can extrude faces to make a 3d shape, and you can perform transformations on a point, 2d face, or 3d shape.
 
-```
+```python
 import math
 import modelmaker as mm
 
@@ -100,7 +100,7 @@ triangle.translate(10, 0, 0)
 triangle.rotate(math.pi)
 
 # reflect the triangle along the line y = 3x + 4
-triangle.reflect(lambda x: 3x + 4)
+triangle.reflect(lambda x: 3 * x + 4)
 
 # scale the triangle by a factor of 2
 triangle.scale(2)
@@ -116,7 +116,7 @@ mm.render([ prism ])
 
 For more complex geometry, you can combine pair of 2d faces or a pair of 3d shapes.
 
-```
+```python
 import math
 import modelmaker as mm
 

@@ -9,6 +9,18 @@ class Face:
 		self.triangles = []
 		self.outline = []
 
+	def translate(self, x, y, z):
+		pass
+
+	def rotate(self, radians):
+		pass
+
+	def reflect(self, line):
+		pass
+
+	def scale(self, factor):
+		pass
+
 	def _parse_points(self, points):
 		"""
 		Creates Point objects from tuples as needed

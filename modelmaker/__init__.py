@@ -4,3 +4,4 @@ from .primitives.shape import Shape
 
 from .operations.render import render
 from .operations.composite import add, subtract, intersect
+from .operations.model import extrude
