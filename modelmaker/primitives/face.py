@@ -30,9 +30,6 @@ class Face:
 			-uy * math.sin(rad/2),
 			-uz * math.sin(rad/2),
 		)
-		print(rad)
-		print(q)
-		print(q_conj)
 
 		for p in self.points:
 			p_quat = (0, p.x, p.y, p.z)
@@ -46,7 +43,10 @@ class Face:
 
 
 	def scale(self, factor):
-		pass
+		for p in self.points:
+			p.x = factor * p.x
+			p.y = factor * p.y
+			p.z = factor * p.z
 
 	def _quatmul(self, q1, q2):
 		a, b, c, d = q1
