@@ -10,6 +10,7 @@ def setup():
 	returns the main camera instance
 	"""
 
+	pr.set_config_flags(pr.FLAG_MSAA_4X_HINT)
 	pr.init_window(500, 500, "Model Maker")
 	pr.set_window_state(pr.FLAG_WINDOW_RESIZABLE)
 	pr.set_target_fps(24)

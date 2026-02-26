@@ -24,4 +24,4 @@ triangle.scale(2)
 prism = mm.extrude(triangle, (0, 0, 1))
 
 # render the scene
-mm.render([ prism ])
+mm.render([prism])
