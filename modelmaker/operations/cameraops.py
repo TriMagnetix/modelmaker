@@ -77,6 +77,7 @@ def pan(camera):
 
 	move = pr.vector2_subtract(get_rel_mouse(), ref_point)
 	forward = pr.vector3_subtract(camera.target, camera.position)
+	forward_norm = pr.vector3_normalize(forward)
 	distance = pr.vector3_length(forward)
 	pan_speed_h = distance / 10 * move.x
 	pan_speed_v = distance / 10 * move.y
@@ -94,7 +95,13 @@ def pan(camera):
 	)
 
 	camera.position = pr.vector3_add(camera.position, translation)
-	camera.target = pr.vector3_add(camera.target, translation)
+
+	new_distance = -camera.position.y / forward_norm.y
+
+	camera.target = pr.vector3_add(
+		pr.vector3_scale(forward_norm, new_distance),
+		camera.position,
+	)
 
 
 def zoom(camera):
