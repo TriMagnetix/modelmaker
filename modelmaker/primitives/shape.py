@@ -1,30 +1,24 @@
 from .face import Face
-from .point import Point
+from . import utils as ut
 
 
 class Shape:
 	def __init__(self, faces):
 		self.faces = self._parse_faces(faces)
 		self.points = self._get_points()
-		self.center = self._calc_centroid()
+		self.center = ut.calc_centroid(self.points)
 
 	def move_to(self, x, y, z):
-		dx, dy, dz = tuple(self.center)
-
-		for p in self.points:
-			p.x += x - dx
-			p.y += y - dy
-			p.z += z - dz
-
-		self.center = self._calc_centroid()
+		ut.move_to(self, (x, y, z))
 
 	def translate(self, x, y, z):
-		for p in self.points:
-			p.x += x
-			p.y += y
-			p.z += z
+		ut.translate(self, (x, y, z))
 
-		self.center = self._calc_centroid()
+	def scale(self, factor):
+		ut.scale(self, factor)
+
+	def rotate(self, rot_vect, rad):
+		ut.rotate(self, rot_vect, rad)
 
 	def _parse_faces(self, faces):
 		"""
@@ -41,15 +35,3 @@ class Shape:
 				points.add(p)
 
 		return points
-
-	def _calc_centroid(self):
-		points = []
-
-		for f in self.faces:
-			points.extend(f.points)
-
-		x = sum(p.x / len(points) for p in points)
-		y = sum(p.y / len(points) for p in points)
-		z = sum(p.z / len(points) for p in points)
-
-		return Point(x, y, z)

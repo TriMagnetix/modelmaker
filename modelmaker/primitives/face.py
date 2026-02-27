@@ -1,7 +1,7 @@
-import math
 from scipy.spatial import Delaunay
 
 from .point import Point
+from . import utils as ut
 
 
 class Face:
@@ -9,83 +9,19 @@ class Face:
 		self.points = self._parse_points(points)
 		self.triangles = []
 		self.outline = []
-		self.center = self._calc_centroid()
+		self.center = ut.calc_centroid(self.points)
 
 	def move_to(self, x, y, z):
-		dx, dy, dz = tuple(self.center)
-
-		for p in self.points:
-			p.x += x - dx
-			p.y += y - dy
-			p.z += z - dz
-
-		self.center = self._calc_centroid()
+		ut.move_to(self, (x, y, z))
 
 	def translate(self, x, y, z):
-		for p in self.points:
-			p.x += x
-			p.y += y
-			p.z += z
-
-		self.center = self._calc_centroid()
-
-	def rotate(self, rot_vect, rad):
-		ux, uy, uz = self._vect_norm(rot_vect)
-		q = (
-			math.cos(rad / 2),
-			ux * math.sin(rad / 2),
-			uy * math.sin(rad / 2),
-			uz * math.sin(rad / 2),
-		)
-		q_conj = (
-			math.cos(rad / 2),
-			-ux * math.sin(rad / 2),
-			-uy * math.sin(rad / 2),
-			-uz * math.sin(rad / 2),
-		)
-
-		x, y, z = self.center
-		self.move_to(0, 0, 0)
-
-		for p in self.points:
-			p_quat = (0, p.x, p.y, p.z)
-			_, p.x, p.y, p.z = self._quatmul(
-				self._quatmul(q, p_quat),
-				q_conj,
-			)
-
-		self.center = self._calc_centroid()
-		self.move_to(x, y, z)
+		ut.translate(self, (x, y, z))
 
 	def scale(self, factor):
-		x, y, z = self.center
+		ut.scale(self, factor)
 
-		self.move_to(0, 0, 0)
-
-		for p in self.points:
-			p.x = factor * p.x
-			p.y = factor * p.y
-			p.z = factor * p.z
-
-		self.center = self._calc_centroid()
-
-		self.move_to(x, y, z)
-
-	def _vect_norm(self, vect):
-		magnitude = math.sqrt(sum([n**2 for n in vect]))
-
-		return (n / magnitude for n in vect)
-
-	def _quatmul(self, q1, q2):
-		w1, x1, y1, z1 = q1
-		w2, x2, y2, z2 = q2
-
-		return (
-			w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
-			w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
-			w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
-			w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
-		)
+	def rotate(self, rot_vect, rad):
+		ut.rotate(self, rot_vect, rad)
 
 	def _parse_points(self, points):
 		"""
@@ -93,13 +29,6 @@ class Face:
 		"""
 
 		return [Point(*p) if type(p).__name__ != "Point" else p for p in points]
-
-	def _calc_centroid(self):
-		x = sum(p.x / len(self.points) for p in self.points)
-		y = sum(p.y / len(self.points) for p in self.points)
-		z = sum(p.z / len(self.points) for p in self.points)
-
-		return Point(x, y, z)
 
 	def _calc_triangles(self):
 		"""
