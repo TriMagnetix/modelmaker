@@ -1,6 +1,6 @@
 # Model Maker
 
-This is a python library used for creating and visualizing 3d models. Model Maker was created with small precise model creation in mind, and it is not intended for CAD or 3d art.
+This is a python library used for creating and visualizing 3d models. Model Maker was designed with small precise model creation in mind, and it is not intended for CAD or 3D art.
 
 ## TODO
 
