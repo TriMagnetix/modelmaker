@@ -2,6 +2,13 @@
 
 This is a python library used for creating and visualizing 3d models. Model Maker was created with small precise model creation in mind, and it is not intended for CAD or 3d art.
 
+## TODO
+
+[ ] Composite geometry operations
+[ ] Automatically center geometry in the render window
+[ ] Generate 3d mesh
+[ ] Export/Import neutral mesh files and stl files
+
 ## Initialize development environment
 
 1. Create a virual environment (optional)
