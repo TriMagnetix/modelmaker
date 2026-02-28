@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='modelmaker',
-	version='1.0.0',
+	version='0.1.0',
 	description='A library for creating small and precise 3d models',
 	url='https://github.com/trimagnetix/modelmaker',
 	author='Madison Hanberry',
