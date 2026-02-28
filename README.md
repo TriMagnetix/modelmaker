@@ -4,10 +4,10 @@ This is a python library used for creating and visualizing 3d models. Model Make
 
 ## TODO
 
-[ ] Composite geometry operations
-[ ] Automatically center geometry in the render window
-[ ] Generate 3d mesh
-[ ] Export/Import neutral mesh files and stl files
+- [ ] Composite geometry operations
+- [ ] Automatically center geometry in the render window
+- [ ] Generate 3d mesh
+- [ ] Export/Import neutral mesh files and stl files
 
 ## Initialize development environment
 
@@ -119,7 +119,7 @@ prism = mm.extrude(triangle, (0, 1, 0))
 mm.render([prism])
 ```
 
-### Composite Geometry
+### Composite Geometry (NOT IMPLEMENTED)
 
 For more complex geometry, you can combine pair of 2d faces or a pair of 3d shapes.
 
