@@ -36,7 +36,6 @@ def calc_triangles(primitives):
 
 	for f in faces:
 		f._calc_triangles()
-		f._calc_outline()
 
 
 def draw_3d_shape(shape):
