@@ -11,6 +11,9 @@ class Face:
 		self.outline = []
 		self.center = ut.calc_centroid(self.points)
 
+	def copy(self):
+		return Face([Point(p.x, p.y, p.z) for p in self.points])
+
 	def move_to(self, x, y, z):
 		ut.move_to(self, (x, y, z))
 
@@ -28,7 +31,9 @@ class Face:
 		Creates Point objects from tuples as needed
 		"""
 
-		return [Point(*p) if type(p).__name__ != "Point" else p for p in points]
+		return ut.reorder_points(
+			[Point(*p) if type(p).__name__ != "Point" else p for p in points]
+		)
 
 	def _calc_triangles(self):
 		"""
@@ -68,7 +73,7 @@ class Face:
 		tally = {}
 
 		def count_edge(s, d):
-			key = tuple(set([s, d]))
+			key = tuple(sorted([s, d], key=lambda p: str(p)))
 			tally[key] = tally.get(key, 0) + 1
 
 		for t in self.triangles:

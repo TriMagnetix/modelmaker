@@ -8,6 +8,10 @@ class Shape:
 		self.points = self._get_points()
 		self.center = ut.calc_centroid(self.points)
 
+	def copy(self):
+
+		return Shape([f.copy() for f in self.faces])
+
 	def move_to(self, x, y, z):
 		ut.move_to(self, (x, y, z))
 

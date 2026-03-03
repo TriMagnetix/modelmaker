@@ -41,6 +41,35 @@ def calc_centroid(points):
 	return Point(x, y, z)
 
 
+def reorder_points(points):
+	"""
+	Rearranges points so that the nearest neighbors are next to each other
+	"""
+
+	if len(points) <= 1:
+		return points
+
+	def distance(p1, p2):
+		return math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2 + (p1.z - p2.z) ** 2)
+
+	first = points[0]
+	closest = points[1]
+	closest_idx = 1
+
+	for i, p in enumerate(points):
+		if i <= 1:
+			continue
+		if distance(first, p) > distance(first, closest):
+			continue
+
+		closest = p
+		closest_idx = i
+
+	new_points = [closest] + points[1:closest_idx] + points[closest_idx + 1 :]
+
+	return [first] + reorder_points(new_points)
+
+
 def move_to(body, dest):
 	"""
 	Move a face or a shape to a particular destination
