@@ -1,3 +1,4 @@
+import math
 import pyray as pr
 
 ref_point = (0, 0)
@@ -11,7 +12,7 @@ def setup():
 	"""
 
 	camera = pr.Camera()
-	camera.position = (-7, 7, 7)
+	camera.position = (0, -10, 30)
 	camera.target = (0, 0, 0)
 	camera.up = (0, 1, 0)
 	camera.fovy = 45
@@ -40,31 +41,11 @@ def rotate(camera):
 		return
 
 	move = pr.vector2_subtract(get_rel_mouse(), ref_point)
-	rot_speed_h = -0.1 * move.x
-	rot_speed_v = -0.1 * move.y
-	forward = pr.vector3_subtract(camera.target, camera.position)
+	rot_matrix = pr.matrix_rotate_xyz((-0.1 * move.y, -0.1 * move.x, 0))
+	pos_matrix = pr.Matrix(camera.position.x, camera.position.y, camera.position.z, 1)
+	rotated = pr.matrix_multiply(rot_matrix, pos_matrix)
 
-	# relative right vector
-	right = pr.vector3_cross_product(forward, camera.up)
-	right = pr.vector3_normalize(right)
-
-	# relative up vector
-	up = pr.vector3_cross_product(right, forward)
-	up = pr.vector3_normalize(up)
-
-	# rotate horizontally
-	camera.position = pr.vector3_rotate_by_axis_angle(
-		camera.position,
-		up,
-		rot_speed_h,
-	)
-
-	# rotate vertically
-	camera.position = pr.vector3_rotate_by_axis_angle(
-		camera.position,
-		right,
-		rot_speed_v,
-	)
+	camera.position = (rotated.m0, rotated.m4, rotated.m8)
 
 
 def pan(camera):
