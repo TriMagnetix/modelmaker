@@ -29,9 +29,11 @@ def calc_triangles(primitives):
 	faces = []
 
 	for p in primitives:
-		if type(p).__name__ == "Face":
+		base_names = [ b.__name__ for b in type(p).__bases__ ]
+
+		if type(p).__name__ == "Face" or "Face" in base_names:
 			faces.append(p)
-		elif type(p).__name__ == "Shape":
+		elif type(p).__name__ == "Shape" or "Shape" in base_names:
 			faces.extend(p.faces)
 
 	for f in faces:
@@ -76,13 +78,30 @@ def draw_primitives(primitives):
 
 	for p in primitives:
 		class_name = type(p).__name__
+		base_names = [ b.__name__ for b in type(p).__bases__ ]
 
-		if class_name == "Shape":
+		if class_name == "Shape" or "Shape" in base_names:
 			draw_3d_shape(p)
-		elif class_name == "Face":
+		elif class_name == "Face" or "Face" in base_names:
 			draw_2d_face(p)
-		elif class_name == "Point":
+		elif class_name == "Point" or "Point" in base_names:
 			draw_point(p)
+
+def draw_grid(num, space):
+	for line in range(-num, num, space):
+		color = pr.BLACK if line == 0 else pr.LIGHTGRAY
+		distance = num * space
+		xline = (
+			(-distance, line, 0),
+			(distance, line, 0),
+		)
+		yline = (
+			(line, -distance, 0),
+			(line, distance, 0),
+		)
+
+		pr.draw_line_3d(*xline, color)
+		pr.draw_line_3d(*yline, color)
 
 
 def render(primitives):
@@ -96,7 +115,7 @@ def render(primitives):
 		pr.begin_mode_3d(camera)
 
 		draw_primitives(primitives)
-		pr.draw_grid(100, 1)
+		draw_grid(100, 1)
 
 		pr.end_mode_3d()
 		pr.end_drawing()

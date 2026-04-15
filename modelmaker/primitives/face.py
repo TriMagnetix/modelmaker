@@ -1,4 +1,4 @@
-from scipy.spatial import Delaunay, ConvexHull
+from scipy.spatial import Delaunay
 
 from .point import Point
 from . import utils as ut
@@ -31,41 +31,41 @@ class Face:
 		Creates Point objects from tuples as needed
 		"""
 
-		return [Point(*p) if type(p).__name__ != "Point" else p for p in points]
+		def dedupe(points):
+			rounded = [
+				tuple(round(p, 6))
+				for p in points
+			]
+			deduped = [
+				Point(*p)
+				for p in list(dict.fromkeys(rounded))
+			]
+
+			return deduped
+
+		raw_points = [Point(*p) if type(p).__name__ != "Point" else p for p in points]
+
+		return dedupe(raw_points)
 
 	def _calc_triangles(self):
 		"""
 		Triangulates the face
 		"""
 
-		def dedupe(points):
-			return list(set(points))
-
-		points_xy = [(round(p.x, 3), round(p.y, 3)) for p in self.points]
-		points_xz = [(round(p.x, 3), round(p.z, 3)) for p in self.points]
-		points_yz = [(round(p.y, 3), round(p.z, 3)) for p in self.points]
+		points_xy = [(p.x, p.y) for p in self.points]
+		points_xz = [(p.x, p.z) for p in self.points]
+		points_yz = [(p.y, p.z) for p in self.points]
 
 		# Try to triangulate the face in each plane before failing
 		try:
 			triangulation = Delaunay(points_xy)
-			hull = ConvexHull(points_xy)
 		except:
 			try:
 				triangulation = Delaunay(points_xz)
-				hull = ConvexHull(points_xz)
 			except:
 				triangulation = Delaunay(points_yz)
-				hull = ConvexHull(points_yz)
 
-		# Define edges in the convex hull
 		self._calc_outline()
-		hull_edges = [
-			(
-				tuple(self.points[s[0]]),
-				tuple(self.points[s[1]]),
-			)
-			for s in hull.simplices
-		]
 
 		# Construct the triangles
 		self.triangles = [
@@ -76,35 +76,82 @@ class Face:
 			)
 			for s in triangulation.simplices
 		]
+		self.bad_edges = []
+
+		# Returns a list of unique edges
+		def get_unique_edges():
+			edge_tally = {}
+
+			def tally(p1, p2):
+				if (p1, p2) in edge_tally:
+					edge_tally[(p1, p2)] += 1
+				elif (p2, p1) in edge_tally:
+					edge_tally[(p2, p1)] += 1
+				else:
+					edge_tally[(p1, p2)] = 1
+
+			for t in self.triangles:
+				p1, p2, p3 = t
+
+				tally(p1, p2)
+				tally(p1, p3)
+				tally(p2, p3)
+
+			return [ e for e, tally in edge_tally.items() if tally == 1 ]
 
 		# Remove triangles that interfere with intended concavity
 		def is_good_triangle(triangle):
+			def is_bad_edge(e):
+				p1, p2 = e
+				is_unique = (p1, p2) in self.unique_edges or (p2, p1) in self.unique_edges
+				is_in_outline = (p1, p2) in self.outline or (p2, p1) in self.outline
+
+				return is_unique and not is_in_outline
+
+			result = True
 			p1, p2, p3 = triangle
+			edges = {
+				tuple({p1, p2}),
+				tuple({p1, p3}),
+				tuple({p2, p3}),
+			}
+			bad_edges = set(filter(is_bad_edge, edges))
+			good_edges = edges.difference(bad_edges)
 
-			def in_outline(p1, p2):
-				return (p1, p2) in self.outline or (p2, p1) in self.outline
+			if len(bad_edges) == 0: return True
 
-			def in_hull(p1, p2):
-				return (p1, p2) in hull_edges or (p2, p1) in hull_edges
+			for e in good_edges:
+				if not is_bad_edge(e): continue
+				self.bad_edges += [e]
 
-			return not (
-				(in_outline(p1, p2) and in_outline(p2, p3) and in_hull(p3, p1))
-				or (in_outline(p1, p2) and in_outline(p3, p1) and in_hull(p2, p3))
-				or (in_outline(p2, p3) and in_outline(p3, p1) and in_hull(p1, p2))
-			)
+			self.bad_edges += bad_edges
 
-		self.triangles = list(filter(is_good_triangle, self.triangles))
+			return False
+
+		# Cull the triangles until there are no bad triangles left
+		self.unique_edges = get_unique_edges()
+		while True:
+			updated_triangles = list(filter(is_good_triangle, self.triangles))
+
+			if len(updated_triangles) == len(self.triangles): break
+
+			self.triangles = updated_triangles
+			self.unique_edges = get_unique_edges()
 
 	def _calc_outline(self):
 		"""
 		Creates the outline using non-shared edges in the triangulation
 		"""
 
-		self.outline = []
+		self.outline = set()
 
 		for i in range(len(self.points)):
-			edge = (
+			edge = tuple({
 				tuple(self.points[i]),
 				tuple(self.points[(i + 1) % len(self.points)]),
-			)
-			self.outline.append(edge)
+			})
+
+			if len(edge) == 1:
+				edge = (edge[0], edge[0])
+
+			self.outline.add(edge)
