@@ -59,20 +59,8 @@ def draw_2d_face(face):
 	for t in face.triangles:
 		pr.draw_triangle_3d(*t, pr.GREEN)
 
-		'''
-		p1, p2, p3 = t
-		pr.draw_line_3d(p1, p2, pr.LIGHTGRAY)
-		pr.draw_line_3d(p2, p3, pr.LIGHTGRAY)
-		pr.draw_line_3d(p1, p3, pr.LIGHTGRAY)
-		'''
-
 	for o in face.outline:
 		pr.draw_line_3d(*o, pr.DARKGREEN)
-
-	'''
-	for b in face.bad_edges:
-		pr.draw_line_3d(*b, pr.RED)
-	'''
 
 
 def draw_point(point):
