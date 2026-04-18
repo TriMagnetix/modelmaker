@@ -33,11 +33,15 @@ class Face:
 
 		def dedupe(points):
 			rounded = [
-				Point(round(p.x, 6), round(p.y, 6), round(p.z, 6))
+				tuple(round(p, 6))
 				for p in points
 			]
+			deduped = [
+				Point(*p)
+				for p in list(dict.fromkeys(rounded))
+			]
 
-			return list(dict.fromkeys(rounded))
+			return deduped
 
 		raw_points = [Point(*p) if type(p).__name__ != "Point" else p for p in points]
 
