@@ -85,6 +85,24 @@ mm.render([
 ])
 ```
 
+### Export a model
+
+You can export a model to a different format using the `export` module. Currently, only STL files are supported.
+
+```
+import modelmaker as mm
+
+# create a face or shape
+triangle = mm.Face([
+	(0, 0, 0),
+	(1, 0, 0),
+	(0, 1, 0),
+])
+
+# export to an stl file called "triangle.stl"
+mm.export.stl([triangle], name='triangle')
+```
+
 ### Transformations
 
 You can extrude faces to make a 3d shape, and you can perform transformations on a point, 2d face, or 3d shape.
