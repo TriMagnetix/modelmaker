@@ -1,6 +1,7 @@
 import pyray as pr
 
 from . import cameraops as co
+from . import utils as ut
 
 
 def setup():
@@ -29,11 +30,9 @@ def calc_triangles(primitives):
 	faces = []
 
 	for p in primitives:
-		base_names = [ b.__name__ for b in type(p).__bases__ ]
-
-		if type(p).__name__ == "Face" or "Face" in base_names:
+		if ut.is_face(p):
 			faces.append(p)
-		elif type(p).__name__ == "Shape" or "Shape" in base_names:
+		elif ut.is_shape(p):
 			faces.extend(p.faces)
 
 	for f in faces:
@@ -77,14 +76,11 @@ def draw_primitives(primitives):
 	"""
 
 	for p in primitives:
-		class_name = type(p).__name__
-		base_names = [ b.__name__ for b in type(p).__bases__ ]
-
-		if class_name == "Shape" or "Shape" in base_names:
+		if ut.is_shape(p):
 			draw_3d_shape(p)
-		elif class_name == "Face" or "Face" in base_names:
+		elif ut.is_face(p):
 			draw_2d_face(p)
-		elif class_name == "Point" or "Point" in base_names:
+		elif ut.is_point(p):
 			draw_point(p)
 
 def draw_grid(num, space):

@@ -1,12 +1,12 @@
 import struct
-
 import modelmaker as mm
 
+from . import utils as ut
 
-def stl(primitives, name='mesh'):
-	faces = [ p for p in primitives if type(p).__name__ == 'Face' ]
-	shapes = [ p for p in primitives if type(p).__name__ == 'Shape' ]
 
+def stl(primitives, name='model'):
+	faces = [ p for p in primitives if ut.is_face(p) ]
+	shapes = [ p for p in primitives if ut.is_shape(p) ]
 	
 	for s in shapes:
 		faces.extend(s.faces)
