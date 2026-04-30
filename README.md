@@ -7,7 +7,11 @@ This is a python library used for creating and visualizing 3d models. Model Make
 - [ ] Composite geometry operations
 - [ ] Automatically center geometry in the render window
 - [ ] Generate 3d mesh
-- [ ] Export/Import neutral mesh files and stl files
+- [ ] Export/Import
+    - [ ] stl
+        - [x] Export
+        - [ ] Import
+    - [ ] neutral mesh
 
 ## Initialize development environment
 
@@ -38,7 +42,7 @@ pytest
 
 ### Create and render a model
 
-The only primitives in this library are points, 2d faces, and 3d shapes. A list of points defines a 2d face, and a list of faces defines a 3d shape.
+The only primitives in this library are points, 2d faces, 3d shapes, and groups. A list of points defines a 2d face, and a list of faces defines a 3d shape. A group can contain faces and shapes.
 
 ```python
 import modelmaker as mm
@@ -77,12 +81,15 @@ tetrahedron = mm.Shape([
 	],
 ])
 
-# render a group of primitives to the screen, and navigate the scene using the mouse
+# create a group of primitives and treat them like a single shape
+group = mm.Group([triangle, tetrahedron])
+
+# render primitives to the screen, and navigate the scene using the mouse
 mm.render([
 	origin,
-	triangle,
-	tetrahedron
+    group,
 ])
+
 ```
 
 ### Export a model
