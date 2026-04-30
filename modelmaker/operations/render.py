@@ -1,7 +1,7 @@
 import pyray as pr
 
 from . import cameraops as co
-from . import utils as ut
+from .. import utils as ut
 
 
 def setup():
@@ -32,7 +32,7 @@ def calc_triangles(primitives):
 	for p in primitives:
 		if ut.is_face(p):
 			faces.append(p)
-		elif ut.is_shape(p):
+		elif ut.is_shape(p) or ut.is_group(p):
 			faces.extend(p.faces)
 
 	for f in faces:
@@ -76,7 +76,9 @@ def draw_primitives(primitives):
 	"""
 
 	for p in primitives:
-		if ut.is_shape(p):
+		if ut.is_group(p):
+			draw_primitives(p.members)
+		elif ut.is_shape(p):
 			draw_3d_shape(p)
 		elif ut.is_face(p):
 			draw_2d_face(p)

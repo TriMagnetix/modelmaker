@@ -1,10 +1,10 @@
 import struct
 import modelmaker as mm
 
-from . import utils as ut
-
+from .. import utils as ut
 
 def stl(primitives, name='model'):
+	primitives = ut.unpack_groups(primitives)
 	faces = [ p for p in primitives if ut.is_face(p) ]
 	shapes = [ p for p in primitives if ut.is_shape(p) ]
 	

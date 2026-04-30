@@ -3,6 +3,9 @@ class Point:
 		self.x = x
 		self.y = y
 		self.z = z
+	
+	def copy(self):
+		return Point(*tuple(self))
 
 	def __str__(self):
 		return f"({self.x}, {self.y}, {self.z})"

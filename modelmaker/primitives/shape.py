@@ -1,28 +1,15 @@
+from .primitive import Primitive
 from .face import Face
-from . import utils as ut
 
 
-class Shape:
+class Shape(Primitive):
 	def __init__(self, faces):
 		self.faces = self._parse_faces(faces)
 		self.points = self._get_points()
-		self.center = ut.calc_centroid(self.points)
+		self.center = self._calc_centroid()
 
 	def copy(self):
-
 		return Shape([f.copy() for f in self.faces])
-
-	def move_to(self, x, y, z):
-		ut.move_to(self, (x, y, z))
-
-	def translate(self, x, y, z):
-		ut.translate(self, (x, y, z))
-
-	def scale(self, factor):
-		ut.scale(self, factor)
-
-	def rotate(self, rot_vect, rad):
-		ut.rotate(self, rot_vect, rad)
 
 	def _parse_faces(self, faces):
 		"""

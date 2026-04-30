@@ -1,30 +1,19 @@
 from scipy.spatial import Delaunay
 
+from .. import utils as ut
+from .primitive import Primitive
 from .point import Point
-from . import utils as ut
 
 
-class Face:
+class Face(Primitive):
 	def __init__(self, points):
 		self.points = self._parse_points(points)
 		self.triangles = []
 		self.outline = []
-		self.center = ut.calc_centroid(self.points)
+		self.center = self._calc_centroid()
 
 	def copy(self):
-		return Face([Point(p.x, p.y, p.z) for p in self.points])
-
-	def move_to(self, x, y, z):
-		ut.move_to(self, (x, y, z))
-
-	def translate(self, x, y, z):
-		ut.translate(self, (x, y, z))
-
-	def scale(self, factor):
-		ut.scale(self, factor)
-
-	def rotate(self, rot_vect, rad):
-		ut.rotate(self, rot_vect, rad)
+		return Face([p.copy() for p in self.points])
 
 	def _parse_points(self, points):
 		"""
