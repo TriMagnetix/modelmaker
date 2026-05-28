@@ -25,14 +25,9 @@ def stl(primitives, name='model'):
 			for n in data:
 				file.write(struct.pack('<f', n))
 
-		for (p1, p2, p3) in triangles:
-			vect1 = mm.Point(*p2) - mm.Point(*p1)
-			vect2 = mm.Point(*p3) - mm.Point(*p1)
-			norm = (
-				vect1.y * vect2.z - vect1.z * vect2.y,
-				- (vect1.x * vect2.z - vect1.z * vect2.x),
-				vect1.x * vect2.y - vect1.y * vect2.x,
-			)
+		for t in triangles:
+			p1, p2, p3 = t
+			norm = ut.triangle_norm(t)
 
 			write_data(norm)
 			write_data(p1)

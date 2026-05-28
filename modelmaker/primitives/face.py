@@ -6,8 +6,9 @@ from .point import Point
 
 
 class Face(Primitive):
-	def __init__(self, points):
+	def __init__(self, points, flip_norms=False):
 		self.points = self._parse_points(points)
+		self.flip_norms = flip_norms
 		self.triangles = []
 		self.outline = []
 		self.center = self._calc_centroid()
@@ -126,6 +127,16 @@ class Face(Primitive):
 
 			self.triangles = updated_triangles
 			self.unique_edges = get_unique_edges()
+
+		# Invert the normals if necessary
+		if self.flip_norms:
+			self._invert_normals()
+	
+	def _invert_normals(self):
+		if len(self.triangles) == 0:
+			self._calc_triangles()
+
+		self.triangles = [ (p3, p2, p1) for (p1, p2, p3) in self.triangles ]
 
 	def _calc_outline(self):
 		"""

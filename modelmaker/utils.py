@@ -1,4 +1,5 @@
 import math
+import modelmaker as mm
 
 def vect_norm(vect):
 	"""
@@ -8,6 +9,20 @@ def vect_norm(vect):
 	magnitude = math.sqrt(sum([n**2 for n in vect]))
 
 	return (n / magnitude for n in vect)
+
+def triangle_norm(triangle):
+	p1, p2, p3 = triangle
+
+	vect1 = mm.Point(*p2) - mm.Point(*p1)
+	vect2 = mm.Point(*p3) - mm.Point(*p1)
+
+	norm = mm.Point(
+		vect1.y * vect2.z - vect1.z * vect2.y,
+		vect1.z * vect2.x - vect1.x * vect2.z,
+		vect1.x * vect2.y - vect1.y * vect2.x,
+	)
+
+	return norm
 
 def quat_mul(q1, q2):
 	"""
@@ -23,6 +38,10 @@ def quat_mul(q1, q2):
 		w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
 		w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
 	)
+
+def cos_similarity(v1, v2):
+
+	return v1.dot(v2) / (v1.magnitude() * v2.magnitude())
 
 def is_type(primitive, t):
 	class_name = type(primitive).__name__

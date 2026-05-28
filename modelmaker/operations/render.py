@@ -15,7 +15,7 @@ def setup():
 	pr.init_window(500, 500, "Model Maker")
 	pr.set_window_state(pr.FLAG_WINDOW_RESIZABLE)
 	pr.set_target_fps(24)
-	pr.rl_disable_backface_culling()
+	#pr.rl_disable_backface_culling()
 
 	camera = co.setup()
 

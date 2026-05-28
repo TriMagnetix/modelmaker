@@ -1,4 +1,7 @@
+import math
+
 from .point import Point
+from .. import utils as ut
 
 class Primitive:
 	def copy(self):
@@ -55,7 +58,7 @@ class Primitive:
 		Rotates a face or a given amount around a rotation vector
 		"""
 
-		ux, uy, uz = vect_norm(rot_vect)
+		ux, uy, uz = ut.vect_norm(rot_vect)
 		q = (
 			math.cos(rad / 2),
 			ux * math.sin(rad / 2),
@@ -74,8 +77,8 @@ class Primitive:
 
 		for p in self.points:
 			p_quat = (0, p.x, p.y, p.z)
-			_, p.x, p.y, p.z = quat_mul(
-				quat_mul(q, p_quat),
+			_, p.x, p.y, p.z = ut.quat_mul(
+				ut.quat_mul(q, p_quat),
 				q_conj,
 			)
 
