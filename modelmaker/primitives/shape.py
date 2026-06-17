@@ -1,3 +1,4 @@
+from .. import utils as ut
 from .primitive import Primitive
 from .face import Face
 
@@ -16,7 +17,7 @@ class Shape(Primitive):
 		Creates Face objects from tuples as needed
 		"""
 
-		return [Face(f) if type(f).__name__ != "Face" else f for f in faces]
+		return [Face(f) if not ut.is_face(f) else f for f in faces]
 
 	def _get_points(self):
 		points = set()

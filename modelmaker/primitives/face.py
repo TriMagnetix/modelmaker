@@ -33,7 +33,7 @@ class Face(Primitive):
 
 			return deduped
 
-		raw_points = [Point(*p) if type(p).__name__ != "Point" else p for p in points]
+		raw_points = [Point(*p) if not ut.is_point(p) else p for p in points]
 
 		return dedupe(raw_points)
 
